@@ -1,0 +1,18 @@
+.columns-container {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    border: 5px solid #5c715e;
+
+
+}
+.single-column {
+    flex: 4;
+    background-color: #f2f9f1;
+    border : 2px solid #b6cdbd;
+
+}
+
+.hovered {
+    background-color: #e7eaf6;
+}

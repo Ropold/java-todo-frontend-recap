@@ -1,7 +1,8 @@
 import {useEffect, useState} from "react";
 import axios from "axios";
-import {Link} from "react-router-dom";
 
+import AddTodo from "./AddTodo.tsx";
+import TodoColumn from "./TodoColumn.tsx";
 
 export type Todo = {
     id: string;
@@ -69,7 +70,7 @@ export default function Home(){
             .then((response) => {
                 setTodos((prevTodos) =>
                     prevTodos.map((todo) =>
-                        todo.id === id ? { ...todo, status: newStatus } : todo
+                        todo.id === id ? response.data : todo
                     )
                 );
             })
@@ -82,43 +83,41 @@ export default function Home(){
     return(
         <>
             <h1>Home</h1>
-            <ul>
-                {todos.map((todo) => (
-                    <li key={todo.id}>
-                        <strong>{todo.description}</strong> - {todo.status}
-                        <Link to={`/todo/${todo.id}`}>
-                            <button>Details</button>
-                        </Link>
-                        <button onClick={() => deleteTodo(todo.id)}>Delete</button>
-                        <select
-                            value={todo.status}
-                            onChange={(e) => updateStatus(todo.id, e.target.value as "OPEN" | "IN_PROGRESS" | "DONE")}
-                        >
-                            <option value="OPEN">OPEN</option>
-                            <option value="IN_PROGRESS">IN_PROGRESS</option>
-                            <option value="DONE">DONE</option>
-                        </select>
-                    </li>
-                ))}
-            </ul>
 
-
-            <div>
-                <h2>Add New Todo</h2>
-                <input
-                    type="text"
-                    value={description}
-                    onChange={(e) => setDescription(e.target.value)}
-                    placeholder="Description"
-                />
-                <select value={status} onChange={(e) => setStatus(e.target.value as "OPEN" | "IN_PROGRESS" | "DONE")}>
-                    <option value="OPEN">OPEN</option>
-                    <option value="IN_PROGRESS">IN_PROGRESS</option>
-                    <option value="DONE">DONE</option>
-                </select>
-                <button onClick={createNewTodo}>Create Todo</button>
+            <div className={"columns-container"}>
+                <div className={"single-column"}>
+                    <TodoColumn
+                    title="Open"
+                    todos={todos.filter((todo) => todo.status === "OPEN")}
+                    onDelete={deleteTodo}
+                    onUpdateStatus={updateStatus}
+                /></div>
+                <div className={"single-column"}>
+                    <TodoColumn
+                    title="In Progress"
+                    todos={todos.filter((todo) => todo.status === "IN_PROGRESS")}
+                    onDelete={deleteTodo}
+                    onUpdateStatus={updateStatus}
+                /></div>
+                <div className={"single-column"}>
+                    <TodoColumn
+                    title="Done"
+                    todos={todos.filter((todo) => todo.status === "DONE")}
+                    onDelete={deleteTodo}
+                    onUpdateStatus={updateStatus}
+                /></div>
             </div>
 
+
+            <div className={"add-todo"}>
+            <AddTodo
+                description={description}
+                status={status}
+                setDescription={setDescription}
+                setStatus={setStatus}
+                createNewTodo={createNewTodo}
+            />
+            </div>
         </>
     );
 }
